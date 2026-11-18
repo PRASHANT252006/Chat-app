@@ -1,0 +1,286 @@
+:root {
+  --ink: #17203d;
+  --muted: #5d6685;
+  --paper: #f3f5fb;
+  --card: #ffffff;
+  --line: #d9deee;
+  --blue: #3452ff;
+  --blue-dark: #2339c9;
+  --sun: #ffc93c;
+  --danger: #c62b3a;
+  font-family: "Bricolage Grotesque", system-ui, sans-serif;
+  color: var(--ink);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  min-height: 100vh;
+}
+
+h1,
+h2 {
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+:focus-visible {
+  outline: 3px solid var(--sun);
+  outline-offset: 2px;
+}
+
+.auth {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.auth-art {
+  background: var(--blue);
+  padding: 64px 48px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 18px;
+  overflow: hidden;
+}
+
+.bubble {
+  max-width: 320px;
+  padding: 16px 20px;
+  background: #fff;
+  color: var(--ink);
+  border-radius: 24px 24px 24px 6px;
+  font-size: 1.05rem;
+  font-weight: 500;
+  align-self: flex-start;
+  animation: pop 0.5s ease both;
+}
+
+.bubble.mine {
+  background: var(--sun);
+  border-radius: 24px 24px 6px 24px;
+  align-self: flex-end;
+}
+
+.b1 { animation-delay: 0.1s; }
+.b2 { animation-delay: 0.5s; }
+.b3 { animation-delay: 0.9s; }
+.b4 { animation-delay: 1.3s; }
+
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: scale(0.85) translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.auth-panel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 20px;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 400px;
+}
+
+.auth-card h1 {
+  font-size: 2.1rem;
+  font-weight: 700;
+}
+
+.sub {
+  color: var(--muted);
+  margin: 8px 0 28px;
+  line-height: 1.5;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+  padding: 13px 14px;
+  border: 1.5px solid var(--line);
+  border-radius: 12px;
+  background: var(--card);
+  color: var(--ink);
+}
+
+input:focus {
+  border-color: var(--blue);
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  border-radius: 12px;
+  padding: 14px 18px;
+  background: var(--blue);
+  color: #fff;
+  font-weight: 700;
+  transition: background 0.15s;
+}
+
+button:hover:not(:disabled) {
+  background: var(--blue-dark);
+}
+
+button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+button.ghost {
+  background: transparent;
+  color: var(--ink);
+  border: 1.5px solid var(--line);
+  padding: 10px 16px;
+}
+
+button.ghost:hover:not(:disabled) {
+  background: var(--card);
+}
+
+button.link {
+  background: none;
+  color: var(--muted);
+  padding: 4px;
+  font-weight: 500;
+  text-decoration: underline;
+}
+
+button.link:hover:not(:disabled) {
+  background: none;
+  color: var(--ink);
+}
+
+.error {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #fdecee;
+  color: var(--danger);
+  font-size: 0.92rem;
+}
+
+.switch {
+  margin: 24px 0 0;
+  color: var(--muted);
+}
+
+.switch a {
+  color: var(--blue);
+  font-weight: 700;
+}
+
+.avatar-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.avatar-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.avatar {
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.avatar.fallback {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--sun);
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.home-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  background: var(--card);
+  border-bottom: 1px solid var(--line);
+}
+
+.who {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.who div {
+  display: flex;
+  flex-direction: column;
+}
+
+.who span {
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.home-empty {
+  max-width: 420px;
+  margin: 18vh auto 0;
+  padding: 0 20px;
+  text-align: center;
+}
+
+.home-empty h2 {
+  font-size: 1.6rem;
+}
+
+.home-empty p {
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+@media (max-width: 800px) {
+  .auth {
+    grid-template-columns: 1fr;
+  }
+  .auth-art {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bubble {
+    animation: none;
+  }
+}
