@@ -3,7 +3,10 @@ const dns=require('dns')
 dns.setServers(['8.8.8.8', '1.1.1.1']);
 require("dotenv").config()
 const connect=require("./db/connect.js")
+const authMiddleware=require("./middleware/auth.js")
 const authroute=require("./routes/auth.js")
+const conversationroute=require("./routes/conversation.js")
+const userroute=require("./routes/user.js")
 const app=express();
 const port=process.env.PORT;
 const {notFoundMiddleware}=require('./middleware/notFound.js')
@@ -19,8 +22,10 @@ app.use(cookieParser());
 app.use(express.json());
 
 app.use('/api/v1',authroute);
-app.use(errorHandlerMiddleware);
+app.use('/api/v1',authMiddleware,conversationroute);
+app.use('/api/v1',userroute);
 app.use(notFoundMiddleware);
+// app.use(errorHandlerMiddleware);
 const connection=async()=>{
     try{
         await connect(process.env.MONGO_URI);
