@@ -157,4 +157,67 @@ console.log("Avatar URL:", avatarurl);
     });
 };
 
-module.exports = { login, register };
+
+const refreshaccessToken = async (req, res) => {
+
+    const refreshtoken = req.cookies?.refreshtoken;
+
+    if (!refreshtoken) {
+        throw new customApiError(401, "Unauthorized");
+    }
+
+    let decoded;
+
+    try {
+        decoded = jwt.verify(
+            refreshtoken,
+            process.env.refresh_Token_Secret
+        );
+    } catch (error) {
+        throw new customApiError(401, "Invalid or expired refresh token");
+    }
+
+    const hashedRefreshToken = crypto
+        .createHash('sha256')
+        .update(refreshtoken)
+        .digest('hex');
+
+    const session1 = await session.findOne({
+        user: decoded._id,
+        refreshtoken: hashedRefreshToken
+    });
+
+    if (!session1) {
+        throw new customApiError(401, "Invalid refresh token");
+    }
+
+    const user1 = await user.findById(session1.user);
+
+    if (!user1) {
+        throw new customApiError(401, "User not found");
+    }
+
+    const accesstoken = jwt.sign(
+        {
+            _id: user1._id,
+            username: user1.username,
+            email: user1.email
+        },
+        process.env.access_Token_Secret,
+        { expiresIn: '15m' }
+    );
+
+    res.cookie('accesstoken', accesstoken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        maxAge: 15 * 60 * 1000
+    });
+    console.log("Access token refreshed successfully");
+
+    return res.status(200).json({
+        message: "Access token refreshed successfully"
+    });
+};
+
+module.exports = { login, register,refreshaccessToken };

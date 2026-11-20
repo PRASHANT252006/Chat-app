@@ -1,6 +1,7 @@
 
 const Conversation = require('../models/conversation');
 const { customApiError } = require('../error/customApiError.js');
+const user = require('../models/user.js');
 
 const createOrGetConversation = async (req, res) => {
     const id = req.user._id;
@@ -9,7 +10,14 @@ const createOrGetConversation = async (req, res) => {
     if (!receiverId) {
         throw new customApiError(400, 'Please provide receiverId');
     }
+if(String(receiverId)===String(id)){
+    throw new customApiError(400,"please provide receiverId")
+}
+ const receiver = await user.findById(receiverId).select('_id');
 
+    if (!receiver) {
+        throw new customApiError(404, 'User not found');
+    }
     const conversations = await Conversation.findOne({
         participants: {
             $all: [id, receiverId]
@@ -36,7 +44,7 @@ const getMyConversations = async (req, res) => {
     const myconversation = await Conversation.find({
         participants: id
     })
-    .populate("participants", "username email avatar")
+    .populate("participants", "username  avatar")
     .populate("lastMessage")
     .sort({ updatedAt: -1 });
 

@@ -5,8 +5,9 @@ const session=new mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref:"User"
     },
-    token:{
+    refreshtoken:{
         type:String
     }
 })
+
 module.exports=mongoose.model('session',session)

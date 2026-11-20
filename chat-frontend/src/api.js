@@ -7,6 +7,13 @@ const readError = async (res) => {
   } catch {
     text = "";
   }
+  let message = "";
+  try {
+    message = JSON.parse(text).message || "";
+  } catch {
+    message = "";
+  }
+  if (typeof message === "string" && message) return message;
   const looksLikeHtml = text.trim().startsWith("<");
   if (text && !looksLikeHtml && text.length < 200) return text;
   if (res.status === 401) return "Invalid email or password";
@@ -23,9 +30,15 @@ const request = async (path, options) => {
       ...options,
     });
   } catch {
-    throw new Error("Cannot reach the server. Check that it is running.");
+    const error = new Error("Cannot reach the server. Check that it is running.");
+    error.status = 0;
+    throw error;
   }
-  if (!res.ok) throw new Error(await readError(res));
+  if (!res.ok) {
+    const error = new Error(await readError(res));
+    error.status = res.status;
+    throw error;
+  }
   return res.json();
 };
 
@@ -41,3 +54,11 @@ export const registerRequest = (formData) =>
     method: "POST",
     body: formData,
   });
+
+export const getUsersRequest = (search = "") =>
+  request(search ? `/getUsers?search=${encodeURIComponent(search)}` : "/getUsers");
+
+export const getConversationsRequest = () => request("/getMyConversations");
+
+export const createConversationRequest = (receiverId) =>
+  request(`/createOrGetConversation/${receiverId}`, { method: "POST" });
