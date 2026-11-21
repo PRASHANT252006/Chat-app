@@ -19,3 +19,15 @@ Protected routes
 3. Fetch user from MongoDB.
 4. Attach user to req.user.
 5. Call next().
+
+
+
+phase 1:login and registartion,and auth
+Phase 2: users and conversations (MongoDB search with ?search=)
+Phase 3: messages over REST
+Phase 4: real-time with Socket.IO
+Phase 5: online status, typing, unread count
+Phase 6: Redis (online status store, Socket.IO adapter, rate limiting, caching)
+Phase 7: Elasticsearch (message search, then user autocomplete)
+
+Phase 3 is messages over REST: sending a message and loading the messages of a chat

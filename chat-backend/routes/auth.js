@@ -5,5 +5,5 @@ const router=express.Router();
 const {login,register,refreshaccessToken}=require('../controllers/auth.js');
 router.post('/',login);
 router.post('/register', upload.single('avatar'), register);
-router.get('/refreshAccessToken',authMiddleware,refreshaccessToken);
+router.get('/refreshAccessToken',refreshaccessToken);
 module.exports=router;

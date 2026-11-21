@@ -22,7 +22,23 @@ const readError = async (res) => {
   return "Something went wrong. Try again.";
 };
 
-const request = async (path, options) => {
+let refreshing = null;
+
+const refreshAccess = () => {
+  if (!refreshing) {
+    refreshing = fetch(`${BASE}/refreshAccessToken`, { credentials: "include" })
+      .then((res) => res.ok)
+      .catch(() => false)
+      .finally(() => {
+        refreshing = null;
+      });
+  }
+  return refreshing;
+};
+
+const NO_REFRESH = ["/", "/register", "/refreshAccessToken"];
+
+const request = async (path, options, canRetry = true) => {
   let res;
   try {
     res = await fetch(`${BASE}${path}`, {
@@ -33,6 +49,10 @@ const request = async (path, options) => {
     const error = new Error("Cannot reach the server. Check that it is running.");
     error.status = 0;
     throw error;
+  }
+  if (res.status === 401 && canRetry && !NO_REFRESH.includes(path)) {
+    const refreshed = await refreshAccess();
+    if (refreshed) return request(path, options, false);
   }
   if (!res.ok) {
     const error = new Error(await readError(res));
@@ -62,3 +82,15 @@ export const getConversationsRequest = () => request("/getMyConversations");
 
 export const createConversationRequest = (receiverId) =>
   request(`/createOrGetConversation/${receiverId}`, { method: "POST" });
+
+export const getMessagesRequest = (conversationId) =>
+  request(`/getMessage/${conversationId}`);
+
+export const sendMessageRequest = (conversationId, text) =>
+  request(`/sendMessage/${conversationId}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ text }),
+  });
+
+export const refreshAccessRequest = () => refreshAccess();

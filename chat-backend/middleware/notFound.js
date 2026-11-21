@@ -1,4 +1,4 @@
 const notFoundMiddleware=(req,res,next)=>{
-    res.send(`No such route with ${req.url}`);
+    res.status(404).send(`No such route with ${req.url}`);
 }
 module.exports= {notFoundMiddleware};

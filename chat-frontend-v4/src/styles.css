@@ -396,3 +396,71 @@ button.row.active {
     max-height: 50vh;
   }
 }
+
+.chat-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 20px 24px;
+}
+
+.msg {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-self: flex-start;
+  max-width: min(70%, 520px);
+  padding: 10px 14px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 18px 18px 18px 6px;
+  line-height: 1.4;
+}
+
+.msg.mine {
+  align-self: flex-end;
+  background: var(--blue);
+  border-color: var(--blue);
+  color: #fff;
+  border-radius: 18px 18px 6px 18px;
+}
+
+.msg-text {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.msg-time {
+  align-self: flex-end;
+  font-size: 0.75rem;
+  opacity: 0.7;
+}
+
+.composer {
+  flex-direction: row;
+  align-items: flex-end;
+  gap: 12px;
+  padding: 14px 24px;
+  background: var(--card);
+  border-top: 1px solid var(--line);
+}
+
+.composer textarea {
+  flex: 1;
+  min-height: 46px;
+  max-height: 140px;
+  padding: 13px 14px;
+  border: 1.5px solid var(--line);
+  border-radius: 12px;
+  background: var(--card);
+  color: var(--ink);
+  font: inherit;
+  resize: none;
+}
+
+.composer textarea:focus {
+  border-color: var(--blue);
+}
