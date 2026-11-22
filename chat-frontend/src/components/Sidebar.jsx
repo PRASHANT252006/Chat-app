@@ -7,6 +7,7 @@ const Sidebar = ({
   items,
   activeId,
   loading,
+  onlineIds,
   onOpenChat,
   onOpenUser,
   onLogout,
@@ -52,7 +53,12 @@ const Sidebar = ({
       if (results.length === 0) return <p className="side-note">No people found</p>;
       return results.map((u) => (
         <button key={u._id} className="row" onClick={() => openUser(u)}>
-          <Avatar src={u.avatar} name={u.username} size={40} />
+          <Avatar
+            src={u.avatar}
+            name={u.username}
+            size={40}
+            online={onlineIds.has(String(u._id))}
+          />
           <div className="row-text">
             <strong>{u.username}</strong>
             <span>Start a chat</span>
@@ -70,11 +76,23 @@ const Sidebar = ({
         className={item.id === activeId ? "row active" : "row"}
         onClick={() => onOpenChat(item.id)}
       >
-        <Avatar src={item.other.avatar} name={item.other.username} size={40} />
+        <Avatar
+          src={item.other.avatar}
+          name={item.other.username}
+          size={40}
+          online={item.online}
+        />
         <div className="row-text">
           <strong>{item.other.username}</strong>
-          <span>{item.lastText}</span>
+          {item.typing ? (
+            <span className="typing-text">typing...</span>
+          ) : (
+            <span>{item.lastText}</span>
+          )}
         </div>
+        {item.unread > 0 && (
+          <span className="badge">{item.unread > 99 ? "99+" : item.unread}</span>
+        )}
       </button>
     ));
   };

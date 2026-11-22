@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { getMessagesRequest, sendMessageRequest } from "../api.js";
+import { socket } from "../socket.js";
 
 const formatTime = (value) =>
   new Date(value).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
@@ -10,6 +11,18 @@ const ChatWindow = ({ conversationId, meId, incoming, onSent, onError }) => {
   const [text, setText] = useState("");
   const [sending, setSending] = useState(false);
   const bottomRef = useRef(null);
+  const lastStartRef = useRef(0);
+  const stopTimerRef = useRef(null);
+  const typingActiveRef = useRef(false);
+
+  const stopTyping = () => {
+    clearTimeout(stopTimerRef.current);
+    if (typingActiveRef.current && socket.connected) {
+      socket.emit("typing:stop", { conversationId });
+    }
+    typingActiveRef.current = false;
+    lastStartRef.current = 0;
+  };
 
   useEffect(() => {
     let ignore = false;
@@ -31,6 +44,8 @@ const ChatWindow = ({ conversationId, meId, incoming, onSent, onError }) => {
     };
   }, [conversationId]);
 
+  useEffect(() => () => stopTyping(), [conversationId]);
+
   useEffect(() => {
     if (!incoming) return;
     if (String(incoming.conversation) !== String(conversationId)) return;
@@ -43,10 +58,28 @@ const ChatWindow = ({ conversationId, meId, incoming, onSent, onError }) => {
     bottomRef.current?.scrollIntoView({ block: "end" });
   }, [messages]);
 
+  const handleChange = (e) => {
+    const value = e.target.value;
+    setText(value);
+    if (!value.trim()) {
+      stopTyping();
+      return;
+    }
+    const now = Date.now();
+    if (now - lastStartRef.current > 2000 && socket.connected) {
+      socket.emit("typing:start", { conversationId });
+      lastStartRef.current = now;
+      typingActiveRef.current = true;
+    }
+    clearTimeout(stopTimerRef.current);
+    stopTimerRef.current = setTimeout(stopTyping, 2000);
+  };
+
   const send = async () => {
     const value = text.trim();
     if (!value || sending) return;
     setSending(true);
+    stopTyping();
     try {
       const created = await sendMessageRequest(conversationId, value);
       setMessages((prev) =>
@@ -94,7 +127,7 @@ const ChatWindow = ({ conversationId, meId, incoming, onSent, onError }) => {
       <form className="composer" onSubmit={handleSubmit}>
         <textarea
           value={text}
-          onChange={(e) => setText(e.target.value)}
+          onChange={handleChange}
           onKeyDown={handleKeyDown}
           placeholder="Type a message"
           aria-label="Type a message"

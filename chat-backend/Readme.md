@@ -31,3 +31,5 @@ Phase 6: Redis (online status store, Socket.IO adapter, rate limiting, caching)
 Phase 7: Elasticsearch (message search, then user autocomplete)
 
 Phase 3 is messages over REST: sending a message and loading the messages of a chat
+
+The markMessagesRead function marks all messages in a particular conversation as read by the currently logged-in user.

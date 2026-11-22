@@ -94,3 +94,6 @@ export const sendMessageRequest = (conversationId, text) =>
   });
 
 export const refreshAccessRequest = () => refreshAccess();
+
+export const markMessagesReadRequest = (conversationId) =>
+  request(`/markMessagesRead/${conversationId}`, { method: "PATCH" });

@@ -1,4 +1,4 @@
-const { createOrGetConversation, getMyConversations, refreshAccessToken } =
+const { createOrGetConversation, getMyConversations} =
     require('../controllers/conversation.js');
 const authMiddleware=require("../middleware/auth.js")
 const express = require('express');
